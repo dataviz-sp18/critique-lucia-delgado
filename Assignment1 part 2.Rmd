@@ -1,0 +1,216 @@
+---
+title: "Assignment 1 Part 2"
+author: "Lucia Delgado"
+date: "6 de abril de 2018"
+output:
+  html_document: default
+  github_document: default
+  md_document: default
+  pdf_document: default
+---
+
+```{r, include=FALSE}
+library(data.table)
+library(ggplot2)
+library(tidyverse)
+library(knitr)
+library(broom)
+library(stringr)
+library(lubridate)
+library(ggmap)
+library(ggrepel)
+library(gridExtra)
+library(pander)
+library(extrafont)
+library(ggthemes)
+library(ggpubr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+setwd("~/Documents/1. Harris/6 Quarter/Data Viz/Financial Inclusion")
+
+load("X2007_global.RData")
+```
+
+```{r, include=FALSE}
+X2017_global = data.table(X2017_global)
+dt = X2017_global
+rm(X2017_global)
+
+dt[, values := 1]
+
+dt[incomegroup =="Low income",val := 1]
+dt[incomegroup =="Lower middle income",val := 2]
+dt[incomegroup =="Upper middle income",val := 3]
+dt[incomegroup =="High income",val := 4]
+
+dt[incomegroup =="Low income",income := "Low"]
+dt[incomegroup =="Lower middle income",income := "Lower middle"]
+dt[incomegroup =="Upper middle income",income := "Upper middle"]
+dt[incomegroup =="High income",income := "High"]
+
+dt[, income_label := gsub(" ", "\n", income)]
+```
+
+
+```{r, include=FALSE}
+#a. Requirements, exceptions, tax incentives, or subsidies to promote opening of branches or outlets in underserved (e.g. poor or rural) areas
+
+cbPalette <- c("#003366", "#009E73", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+levels(dt$income) <- gsub(" ", "\n", levels(dt$income))
+
+dt[,Answer_a := "NA" ]
+dt[c2_1_a==0,Answer_a := "No" ]
+dt[c2_1_a==1,Answer_a := "Yes" ]
+
+pol_a <- ggplot(dt, aes(x = income_label, y = values)) +
+  geom_bar(stat="identity", aes(fill=Answer_a)) +
+  aes(x = fct_reorder(income_label, val, mean)) +
+  labs(title="Survey", x="Income Group", y="Countries") +
+  ggtitle("Promote opening of branches \n in underserved areas") +
+  scale_fill_manual(values=cbPalette) +
+  #theme_minimal() +
+  theme(
+   legend.position = "right",
+   plot.title=element_text(
+     #family = "Palatino",
+     face="bold", 
+     size=11,  color = "grey22"),
+   text=element_text(
+     size=9
+     #family="Palatino"
+       ) ) +
+  guides(fill=guide_legend(title="Answer"))
+```
+
+```{r, include=FALSE}
+#b. Priority lending: mandatory lending requirements targeting those with limited access to financial services e.g. poor people, SMEs, agricultural sector, etc.
+
+cbPalette <- c("#003366", "#009E73", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+levels(dt$income) <- gsub(" ", "\n", levels(dt$income))
+
+dt[,Answer_b := "NA" ]
+dt[c2_2_a==0,Answer_b := "No" ]
+dt[c2_2_a==1,Answer_b := "Yes" ]
+
+pol_b <- ggplot(dt, aes(x = income_label, y = values)) +
+  geom_bar(stat="identity", aes(fill=Answer_b)) +
+  aes(x = fct_reorder(income_label, val, mean)) +
+  labs(title="Survey", x="Income Group", y="Countries") +
+  ggtitle("Priority lending") +
+  scale_fill_manual(values=cbPalette) +
+  #theme_minimal() +
+  theme(
+   legend.position = "right",
+   plot.title=element_text(
+     #family = "Palatino",
+     face="bold", 
+     size=11,  color = "grey22"),
+   text=element_text(
+     size=9
+     #family="Palatino"
+       ) ) +
+  guides(fill=guide_legend(title="Answer"))
+```
+
+```{r, include=FALSE}
+#c. Tax incentive savings schemes (such as tax incentives for retirement, education, or medical savings)
+
+cbPalette <- c("#003366", "#009E73", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+levels(dt$income) <- gsub(" ", "\n", levels(dt$income))
+
+dt[,Answer_c := "NA" ]
+dt[c2_3_a==0,Answer_c := "No" ]
+dt[c2_3_a==1,Answer_c := "Yes" ]
+
+pol_c <- ggplot(dt, aes(x = income_label, y = values)) +
+  geom_bar(stat="identity", aes(fill=Answer_c)) +
+  aes(x = fct_reorder(income_label, val, mean)) +
+  labs(title="Survey", x="Income Group", y="Countries") +
+  ggtitle("Tax incentive \n savings schemes") +
+  scale_fill_manual(values=cbPalette) +
+  #theme_minimal() +
+  theme(
+   legend.position = "right",
+   plot.title=element_text(
+     #family = "Palatino",
+     face="bold", 
+     size=11,  color = "grey22"),
+   text=element_text(
+     size=9
+     #family="Palatino"
+       ) ) +
+  guides(fill=guide_legend(title="Answer"))
+```
+
+
+```{r, include=FALSE}
+# d. Deposit-taking institutions are required to offer basic financial products, such as a basic account (for the purpose of promoting financial inclusion)
+
+cbPalette <- c("#003366", "#009E73", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+levels(dt$income) <- gsub(" ", "\n", levels(dt$income))
+
+dt[,Answer_d := "NA" ]
+dt[c2_4_a==0,Answer_d := "No" ]
+dt[c2_4_a==1,Answer_d := "Yes" ]
+
+pol_d <- ggplot(dt, aes(x = income_label, y = values)) +
+  geom_bar(stat="identity", aes(fill=Answer_d)) +
+  aes(x = fct_reorder(income_label, val, mean)) +
+  labs(title="Survey", x="Income Group", y="Countries") +
+  ggtitle("Basic financial \n products requierements") +
+  scale_fill_manual(values=cbPalette) +
+  #theme_minimal() +
+  theme(
+   legend.position = "right",
+   plot.title=element_text(
+     #family = "Palatino",
+     face="bold", 
+     size=11,  color = "grey22"),
+   text=element_text(
+     size=9
+     #family="Palatino"
+       ) ) +
+  guides(fill=guide_legend(title="Answer"))
+```
+
+```{r, echo=FALSE}
+title1=text_grob("Implementation of Financial \n Inclusion  Programs \n", face = "bold", color = "grey22", just ="right", size = 14)
+
+grid.arrange(pol_a,pol_b, pol_c, pol_d,
+             ncol=2,
+             top= title1
+             )
+```
+
+**Source:** World - Global Financial Inclusion and Consumer Protection Survey 2017. Retireved on april 2018 from http://microdata.worldbank.org/index.php/catalog/2946/data_dictionary
+
+**Note:** The graph displays answers of countries in different income groups to the question: "Which of the following programs or policies has your country implemented to promote financial inclusion?"
+
+##Part 2: ggplot2 and the grammar of graphics 
+### About the graph
+
+The information showed in the graph was obtained from the Global Financial Inclusion and Consumer Protection Survey 2017, published by the World Bank. This survey was administered to financial authorities in each country. 
+
+The figure shows the number of countries by income group that reported to have implemented specific policies to promote financial inclusion. This information shades lights on how common each of these policies are around the globe. This can be useful when comparing the strategy to promote financial inclusion for a specific country with policies implemented in other countries. The income dimension is important, since it is likely that countries with similar income levels have similar priorities in terms of financial inclusion. 
+
+The figure focuses on four policies: (1) promoting opening of branches in underserved areas, (2) priority lending, (3) tax incentives saving schemes, and (4) requirements for basic financial inclusion. 
+
+From the graph we can tell that programs to promote the opening of branches in underserved areas and priority lending programs are more common in lower middle income countries. On the other side, tax incentives for saving schemes are more common in high income countries. Requirements for basic financial products are a common policy in countries from all income groups. In addition, requirements for basic financial products is the only policy that has been implemented by more than half of the countries in the low income group. 
+
+The goal of the figure is to provide information on how many countries have implemented each policy. A bar plot is useful in this case, because it allows to observe how many countries in each group have implemented the policy. Since there are only two possible answers to each question, using a color encoding makes it easy to display the information on the proportion of countries that have implemented the policy. Moreover, it allows to observe proportions while also providing information on absolute values. 
+
+A bar plot for each policy is constructed to make comparisons within each policy easy. A single bar graph containing information for all the policies can make it difficult to the reader to interpret the graph, and might lead to incorrect conclusions.  In addition, four separate bar plots allow to observe in detail the information of each graph. A larger number of separate plots will not allow enough space to display the axis of each plot.
+
+The colors were selected from a colorblind-friendly palette. In addition, the font size for all the text elements is large enough to be easily read. No data transformation where made to the data, since the goal is to provide information of the number of countries in each category. 
+
+ 
+
