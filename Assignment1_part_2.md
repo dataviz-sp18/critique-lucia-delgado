@@ -3,7 +3,7 @@ Assignment 1 Part 2
 Lucia Delgado
 6 de abril de 2018
 
-![](Assignment1_part_2_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](unnamed-chunk-8-1.png)
 
 **Source:** World - Global Financial Inclusion and Consumer Protection Survey 2017. Retireved on april 2018 from <http://microdata.worldbank.org/index.php/catalog/2946/data_dictionary>
 
